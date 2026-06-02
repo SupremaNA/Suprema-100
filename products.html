@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suprema S100 — Partner Program Tier Qualification</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    color: #1a1a1a;
+    background: #f4f3ef;
+    padding: 32px 24px;
+  }
+
+  .page { max-width: 960px; margin: 0 auto; }
+
+  .header {
+    background: #2c2c2a;
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+  }
+  .header h1 { font-size: 20px; font-weight: 500; color: #fff; letter-spacing: -0.01em; }
+  .header p  { font-size: 12px; color: #888780; margin-top: 4px; }
+
+  .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .search-wrap { position: relative; flex: 1; }
+  .search-wrap svg {
+    position: absolute; left: 11px; top: 50%;
+    transform: translateY(-50%); color: #888780; pointer-events: none;
+  }
+  .search-wrap input {
+    width: 100%; height: 36px; padding: 0 12px 0 34px;
+    border: 0.5px solid #ccc; border-radius: 8px; font-size: 13px;
+    background: #fff; color: #1a1a1a; outline: none; transition: border-color 0.15s;
+  }
+  .search-wrap input:focus { border-color: #888; }
+  .count { font-size: 12px; color: #888780; white-space: nowrap; min-width: 60px; text-align: right; }
+
+  .table-card { background: #fff; border-radius: 10px; border: 0.5px solid #ddd; overflow: hidden; }
+
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  col.c-part { width: 148px; }
+  col.c-desc  { width: auto; }
+  col.c-tier  { width: 88px; }
+
+  thead tr { background: #f1efe8; border-bottom: 1px solid #ddd; }
+  th {
+    padding: 10px 14px; font-size: 11px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: #5f5e5a; text-align: left; user-select: none;
+  }
+  th.tier-col    { text-align: center; }
+  th.tier-silver { color: #444441; }
+  th.tier-gold   { color: #854f0b; }
+  th.tier-plat   { color: #3c3489; }
+
+  .cat-row td {
+    background: #f7f6f2; border-top: 1px solid #e8e6e0; border-bottom: 0.5px solid #e8e6e0;
+    padding: 7px 14px; font-size: 11px; font-weight: 500;
+    color: #5f5e5a; text-transform: uppercase; letter-spacing: 0.05em;
+  }
+
+  tbody tr.data-row { border-bottom: 0.5px solid #eee; }
+  tbody tr.data-row:last-child { border-bottom: none; }
+  tbody tr.data-row:nth-child(even) td { background: #faf9f7; }
+  tbody tr.data-row:nth-child(odd)  td { background: #fff; }
+
+  td { padding: 8px 14px; vertical-align: top; }
+
+  .part-cell {
+    font-family: "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 12px; color: #5f5e5a;
+    white-space: nowrap; padding-top: 9px;
+  }
+  .desc-cell {
+    font-size: 13px; color: #1a1a1a;
+    line-height: 1.5; white-space: normal; word-break: break-word;
+  }
+  .tier-cell { text-align: center; padding-top: 7px; }
+
+  .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; border-radius: 50%;
+  }
+  .badge-yes { background: #eaf3de; }
+  .badge-no  { background: #f1efe8; }
+  .badge-yes svg { color: #3b6d11; }
+  .badge-no  svg { color: #b4b2a9; }
+
+  .no-results { padding: 40px; text-align: center; font-size: 13px; color: #888780; display: none; }
+
+  .legend {
+    display: flex; gap: 20px; margin-top: 14px;
+    align-items: center; justify-content: flex-end;
+    font-size: 11px; color: #888780;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <h1>Suprema S100 Partner Program — Tier Qualification</h1>
+    <p>Effective June 1, 2026 &nbsp;·&nbsp; Confidential — not for distribution</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" id="search" placeholder="Search part number or description…" autocomplete="off">
+    </div>
+    <div class="count" id="count"></div>
+  </div>
+
+  <div class="table-card">
+    <table>
+      <colgroup>
+        <col class="c-part">
+        <col class="c-desc">
+        <col class="c-tier">
+        <col class="c-tier">
+        <col class="c-tier">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Part #</th>
+          <th>Description</th>
+          <th class="tier-col tier-silver">Silver</th>
+          <th class="tier-col tier-gold">Gold</th>
+          <th class="tier-col tier-plat">Platinum</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="no-results" id="no-results">No matching parts found.</div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="badge badge-yes">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      Qualifies
+    </div>
+    <div class="legend-item">
+      <div class="badge badge-no">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+      Not included
+    </div>
+  </div>
+
+</div>
+<script>
+const DATA = [{"cat": "Hardware &amp; Accessories", "part": "CS-20", "desc": "Acces Controller, 2-door, 12VDC/24VDC", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "CS-20P", "desc": "Access Controller,  2-door, 12VDC/24VDC/PoE+", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "CS-40", "desc": "Biometric access controller, 1.4GHz Octa Core, 500,000 user, 4 door controller (extendable up to 132 doors), RS485 5ch, Wiegand 4ch, 8 Supervised Input, 8 TTL Output, 4 Relay,", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "DE-620", "desc": "USB Mifare Card Reader/Writer", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "DI-24", "desc": "Two Door Interface Module (8 inputs / 6 outputs (including 4 Form C Relay)", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "EM Card", "desc": "125kHz EM Card", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "ENCR-10", "desc": "APB Plastic Enclosure for CoreStation with power supply (110~240v, 50/60Hz), Dimmension : 340mm x 500mm x 90mm", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "IM-120", "desc": "Multiple Input Entension Module (12 inputs) compatible with BioStar 2 compatible readers and CoreStation", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "Mifare Card 4K Byte", "desc": "13.56MHz Mifare Card: 4Kb Capacity", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "Mifare Card(1KB)", "desc": "13.56Mhz Mifare Card: 1Kb Capacity", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "OM-120", "desc": "Output Control Module (12 outputs) compatible with BioStar2 and BioStar 2 compatible readers", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "SIO2", "desc": "Secure I/O Expansion Module (2 inputs / 1 output) compatible with BioStar 2", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XPQ2-DB", "desc": "Mullion type QR & RF reader, QR (static/dynamic), 13.56MHz RFID (MIFARE, DESFire/EV1, FeliCa), NFC, BLE, IP67, IK08", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XP2-GDPB", "desc": "GangBox type RF Card reader, Dual RFID(125kHz EM & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa), IP67, IK08, NFC, BLE", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XP2-GKDPB", "desc": "GangBox Keypad type RF Card reader, Dual RFID(125kHz EM & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa), IP67, IK08, NFC, BLE", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XP2-MDPB", "desc": "Mullion type RF Card reader, Dual RFID(125kHz EM & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa), IP67, IK08, NFC, BLE", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XPD2-GDB", "desc": "GangBox type RF Card reader, Dual RFID(125kHz EM & 13.56Mhz MIFARE, DESFire/EV1, FeliCa, NFC, ISO14443A), IP67, IK08, BLE", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XPD2-GKDB", "desc": "GangBox Keypad type RF Card reader, Dual RFID(125kHz EM & 13.56Mhz MIFARE, DESFire/EV1, FeliCa, NFC, ISO14443A), IP67, IK08, BLE", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XPD2-MDB", "desc": "Mullion type RF Card reader, Dual RFID(125kHz EM & 13.56Mhz MIFARE, DESFire/EV1, FeliCa, NFC, ISO14443A), IP67, IK08, BLE", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XS2-APB", "desc": "RF Card Reader, MultiCLASS RFID(125kHz EM, HID Prox & 13.56Mhz MIFARE, MIFARE Plus, DESFire EV1/EV2, FeliCa, iCLASS SE/SR/Seos), IP65, NFC, BLE", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XS2-DPB", "desc": "RF Card Reader, Dual RFID(125kHz EM & 13.56Mhz MIFARE, MIFARE Plus,", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XS2-OAPB", "desc": "Fingerprint reader/controller, MultiCLASS RFID(125kHz EM, HID Prox & 13.56Mhz MIFARE,", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XS2-ODPB", "desc": "Fingerprint reader/controller, Dual RFID(125kHz EM & 13.56Mhz MIFARE, MIFARE Plus, DESFire EV1/EV2, FeliCa), IP65, NFC, BLE", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XS2-DPBM-AIR", "desc": "X-Station 2 for Airfob", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XP2-GDPB-AIR", "desc": "GangBox type RF Card reader, Dual RFID(125kHz EM & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa), IP67, IK08, NFC, BLE", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XP2-GKDPB-AIR", "desc": "GangBox Keypad type RF Card reader, Dual RFID(125kHz EM & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa), IP67, IK08, NFC, BLE", "silver": true, "gold": true, "plat": true}, {"cat": "Hardware &amp; Accessories", "part": "XP2-MDPB-AIR", "desc": "Mullion type RF Card reader, Dual RFID(125kHz EM & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa), IP67, IK08, NFC, BLE", "silver": true, "gold": true, "plat": true}, {"cat": "Biometric Devices", "part": "BEP2-OA", "desc": "Fingerprint reader/controller, MultiCLASS SE and Dual RFID (125kHz EM, HID Prox & 13.56Mhz MIFARE, DESFire/EV1, FeliCa, iCLASS SE/SR, NFC, ISO14443A, ISO15693), Optical Sensor(OP6)", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BEP2-OD", "desc": "Fingerprint reader/controller, Dual RFID(125kHz EM & 13.56Mhz MIFARE, DESFire/EV1, FeliCa, NFC, ISO14443A), Optical Sensor(OP6)", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BER2-OD", "desc": "Fingerprint slave reader, Dual RFID(125kHz EM & 13.56Mhz MIFARE, DESFire/EV1, FeliCa, NFC, ISO14443A), Optical Sensor(OP6)", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BEW2-OAPB", "desc": "Fingerprint reader/controller, MultiCLASS SE and Dual RFID (125kHz EM, HID Prox & 13.56Mhz MIFARE, DESFire/EV1, FeliCa, iCLASS SE/SR, NFC, BLE, ISO14443A), Optical Sensor(OP6), PoE, IP67, IK09, Live Finger Detection", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BEW2-ODPB", "desc": "Fingerprint reader/controller, Dual RFID(125kHz EM & 13.56Mhz MIFARE, DESFire/EV1, FeliCa, NFC, BLE, ISO14443A), Optical Sensor(OP6), PoE, IP67,IK09, Live Finger Detection", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BEW2-OHPB", "desc": "Fingerprint reader/controller, HID Prox, Dual RFID(125kHz EM & 13.56Mhz MIFARE, DESFire/EV1, FeliCa, NFC, BLE,  ISO14443A), Optical Sensor(OP6), PoE, IP67, IK09, Live Finger Detection", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BEW3-DB", "desc": "Multiple Credential, Face Recognition (IR+Visual), Dual RFID(125kHz EM & 13.56MhzMIFARE, MIFARE Plus, DESFire/EV1/EV2, FeliCa, NFC, BLE), IP67, IK08", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BEW3-APB", "desc": "Multiple Credential, Face Recognition (IR+Visual), MultiCLASS SE and Dual RFID (125kHzEM, HID Prox & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1/EV2, FeliCa, iCLASSSE/SR/Seos, HID Prox, NFC, BLE), IP67, IK08, PoE", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BMS-2", "desc": "BioMini Slim 2 - USB Fingerprint Enrollment Device", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BLN2-OAB", "desc": "Fingerprint reader/controller, MultiCLASS SE and Dual RFID (125kHz EM, HID Prox & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa, iCLASS SE/SR, NFC), 2.4GHz BLE, Optical Sensor(OP6), IP67", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BLN2-ODB", "desc": "Fingerprint reader/controller, Dual RFID(125kHz EM & 13.56MHz MIFARE, MIFARE Plus, DESFire/EV1), 2.4GHz BLE, Optical Sensor(OP6), IP67", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BLN2-PAB", "desc": "Fingerprint reader/controller, MultiCLASS SE and Dual RFID (125kHz EM, HID Prox & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa, iCLASS SE/SR, NFC), 2.4GHz BLE, Optical Sensor(OPV), IP67, FBI PIV Certification", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BS2A-OAPWB", "desc": "Deep-Learning Fingerprint reader/controller, MultiCLASS SE and Dual RFID (125kHz EM & 13.56Mhz MIFARE, MIFARE Plus, DESFire, DESFire/EV1/EV2/EV3, iClass SE/SR/Seos, HID Prox, FeliCa, NFC, BLE), Optical Sensor(OP6), PoE, WiFi, IP65 ", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BS2A-ODPB", "desc": "Deep-Learning Fingerprint reader/controller, Dual RFID(125kHz EM & 13.56MHz MIFARE, MIFARE Plus, DESFire, DESFire/EV1/EV2/EV3, FeliCa, NFC, BLE), Optical Sensor(OP6), PoE, IP65 ", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BS3-APWB", "desc": "Face Authentication, 5.5\" Touchscreen, QR/Barcode, Intercom, MultiCLASS SE, Dual RFID (125kHz EM, HID Prox & 13.56MHz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa, iCLASS SE/SR/Seos, NFC), IP65, IK06, BLE", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BS3-DB", "desc": "Face Authentication, 5.5\" Touchscreen, QR/Barcode, Intercom, Dual RFID (125kHz EM & 13.56MHz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa, NFC), IP65, IK06, BLE", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BS3M-DB", "desc": "Face Authentication, 7\" Touchscreen, QR/Barcode, Intercom, Dual RFID (125kHz EM & 13.56MHz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa, NFC), IP65, IK06, BLE", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BS3M-APB", "desc": "Face Authentication, 7\" Touchscreen, QR/Barcode, Intercom, MultiCLASS SE, Dual RFID (125kHz EM, HID Prox & 13.56MHz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa, iCLASS SE/SR/Seos, NFC), IP65, IK06, BLE", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BS3M-ODB", "desc": "Face Authentication, Fingerprint, 7\" Touchscreen, QR/Barcode, Intercom, Dual RFID (125kHz EM & 13.56MHz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa, NFC), IP65, IK08, BLE, Outdoor", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BS3M-OAPB", "desc": "Face Authentication, Fingerprint, 7\" Touchscreen, QR/Barcode, Intercom, MultiCLASS SE, Dual RFID (125kHz EM, HID Prox & 13.56MHz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa, iCLASS SE/SR/Seos, NFC), IP65, IK08, BLE, Outdoor", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BSA2-OEPW", "desc": "EOL (New BS2A) Fingerprint reader/controller, RFID(125kHz EM), Optical Sensor(OP6), PoE, WiFi, Live Finger Detection", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BSA2-OHPW", "desc": "EOL (New BS2A) Fingerprint reader/controller, RFID(125kHz HID Prox), Optical Sensor(OP6), PoE, WiFi, Live Finger Detection", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BSA2-OMPW", "desc": "EOL (New BS2A) Fingerprint reader/controller, RFID(13.56Mhz MIFARE, DESFire/EV1, FeliCa, NFC, ISO14443A), Optical Sensor(OP6), PoE, WiFi, Live Finger Detection", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "FSF2-AB", "desc": "Fusion Face Recognition, MultiCLASS SE and Dual RFID (125kHz EM & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1/EV2, FeliCa, iCLASS SE/SR/Seos, NFC, BLE)", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "FSF2-DB", "desc": "Face Recognition, Dual RFID(125kHz EM & 13.56Mhz MIFARE, DESFire/EV1, FeliCa, NFC, ISO14443A)", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "FSF2-ODB", "desc": "Fusion Face+Fingerprint Recognition(Multimodal), Dual RFID(125kHz EM & 13.56Mhz MIFARE, MIFARE Plus, DESFire EV1/EV2, FeliCa, NFC, BLE)", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BEW3-DB-AIR", "desc": "Multiple Credential, Face Recognition (IR+Visual), Dual RFID(125kHz EM & 13.56MhzMIFARE, MIFARE Plus, DESFire/EV1/EV2, FeliCa, NFC, BLE), IP67, IK08 (ETA May, 2025)", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BEW3-APB-AIR", "desc": "Multiple Credential, Face Recognition (IR+Visual), Dual RFID (125kHz EM, HID Prox & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa, iCLASS SE/SR/Seos, NFC), IP67, IK08, PoE", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BS3-APWB-AIR", "desc": "Multiple Credential, Face Recognition, QR/Barcode, Intercom, Dual RFI (125kHz EM, HID Prox & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa, iCLASS SE/SR/Seos, NFC), IP65, IK06, BLE", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BS3-DB-AIR", "desc": "Multiple Credential, Face Recognition, QR/Barcode,Intercom, Dual RFID(125kHz EM & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa, NFC), IP65, IK06, BLE  (ETA Aug, 2025)", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BLN2-OAB-AIR", "desc": "ETA 2027 - Fingerprint reader/controller, MultiCLASS SE and Dual RFID (125kHz EM, HID Prox & 13.56Mhz MIFARE, MIFARE Plus, DESFire/EV1, FeliCa, iCLASS SE/SR/Seos, NFC), 2.4GHz BLE, Optical Sensor(OP6), IP67  (ETA Nov, 2025)", "silver": false, "gold": false, "plat": true}, {"cat": "Biometric Devices", "part": "BLN2-ODB-AIR", "desc": "ETA 2027 - Fingerprint reader/controller, Dual RFID(125kHz EM & 13.56MHz MIFARE, MIFARE Plus, DESFire/EV1), 2.4GHz BLE, Optical Sensor(OP6), IP67  (ETA Nov, 2025)", "silver": false, "gold": false, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-STR", "desc": "BioStar X Starter License \u2014 5 doors, 100 users, 1 operator", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ESS", "desc": "BioStar X Essential License \u2014 32 doors, 1,000 users, 10 operators", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADV", "desc": "BioStar X Advanced License \u2014 128 doors, 50,000 users, 20 operators; includes Maps", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ENT", "desc": "BioStar X Enterprise License \u2014 500 doors, 100,000 users, 40 operators; includes Maps & Advanced AC", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ELT", "desc": "BioStar X Elite License \u2014 2,000 doors, 500,000 users, 100 operators; includes Maps & Advanced AC", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-UP-DOR", "desc": "Door Capacity Upgrade \u2014 adds 32 doors (ESS/ADV/ENT/ELT)", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-UP-USR", "desc": "User Capacity Upgrade \u2014 adds 5,000 users (ESS/ADV/ENT/ELT; Device Manager supports users only)", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-UP-OPR", "desc": "Operator Capacity Upgrade \u2014 adds 10 operators (ESS/ADV/ENT/ELT)", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADD-MCS-BAS", "desc": "Multi Comm Server (Base) \u2014 1 server; supports up to 1,000 readers", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADD-MCS-ADD", "desc": "Multi Comm Server (Add-On) \u2014 adds 1 server; adds support for +1,000 readers", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADD-GIS", "desc": "GIS Mapping \u2014 enables GIS-based area configuration", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADD-VID", "desc": "Video Integration License (per camera) \u2014 for third-party VMS; supports up to 1,000 cameras per site", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADD-SVM", "desc": "Server Matching \u2014 server-side biometric and credential matching", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADD-VST", "desc": "Visitor Management \u2014 manage and control visitor access", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADD-TNA-STD", "desc": "T&A Standard \u2014 time & attendance for up to 500 users", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADD-TNA-ENT", "desc": "T&A Enterprise \u2014 time & attendance for unlimited users", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADD-DIR", "desc": "Directory Integration \u2014 connect BioStar X with external directory services", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADD-RCL", "desc": "Roll Call \u2014 emergency evacuation accountability module", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADD-MOB", "desc": "Mobile App License \u2014 enables BioStar X mobile application", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADD-EVTAPI", "desc": "Event Log API \u2014 receive and store event logs via external API", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-ADD-PLG", "desc": "Plugin Framework \u2014 supports up to 10 custom plugins", "silver": true, "gold": true, "plat": true}, {"cat": "BioStar X Software", "part": "BIOSTARX-PKG-AAC", "desc": "Advanced AC Package \u2014 Global APB, Fire Alarm, Intrusion, Mustering, Occupancy, Elevator, Interlock", "silver": true, "gold": true, "plat": true}];
+const CHECK = `<div class="badge badge-yes"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>`;
+const DASH  = `<div class="badge badge-no"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>`;
+
+function render(query) {
+  const q = query.toLowerCase().trim();
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  let lastCat = null, shown = 0;
+  DATA.forEach(row => {
+    if (q && !row.part.toLowerCase().includes(q) && !row.desc.toLowerCase().includes(q)) return;
+    if (row.cat !== lastCat) {
+      const tr = document.createElement('tr');
+      tr.className = 'cat-row';
+      tr.innerHTML = `<td colspan="5">${row.cat}</td>`;
+      tbody.appendChild(tr);
+      lastCat = row.cat;
+    }
+    const tr = document.createElement('tr');
+    tr.className = 'data-row';
+    tr.innerHTML = `
+      <td class="part-cell">${row.part}</td>
+      <td class="desc-cell">${row.desc}</td>
+      <td class="tier-cell">${row.silver ? CHECK : DASH}</td>
+      <td class="tier-cell">${row.gold   ? CHECK : DASH}</td>
+      <td class="tier-cell">${row.plat   ? CHECK : DASH}</td>`;
+    tbody.appendChild(tr);
+    shown++;
+  });
+  document.getElementById('count').textContent = shown + ' parts';
+  document.getElementById('no-results').style.display = shown === 0 ? 'block' : 'none';
+}
+document.getElementById('search').addEventListener('input', e => render(e.target.value));
+render('');
+</script>
+</body>
+</html>
