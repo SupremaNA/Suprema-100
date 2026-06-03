@@ -99,6 +99,40 @@
     font-size: 11px; color: #888780;
   }
   .legend-item { display: flex; align-items: center; gap: 6px; }
+
+  /* Download button */
+  .dl-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #2c2c2a; color: #fff;
+    border: none; border-radius: 8px;
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    cursor: pointer; text-decoration: none;
+    transition: background 0.15s;
+  }
+  .dl-btn:hover { background: #444441; }
+  .dl-btn svg { flex-shrink: 0; }
+  .dl-wrap { display: flex; justify-content: flex-end; }
+
+  /* Print styles */
+  @media print {
+    @page { size: A4 landscape; margin: 14mm 16mm; }
+    body { background: #fff; padding: 0; font-size: 11px; }
+    .page { max-width: 100%; }
+    .header { border-radius: 6px; padding: 14px 18px; margin-bottom: 14px; }
+    .header h1 { font-size: 14px; }
+    .toolbar, .dl-wrap, .legend { display: none !important; }
+    .table-card { border-radius: 0; border: none; }
+    col.c-part { width: 130px; }
+    col.c-tier { width: 70px; }
+    th, td { padding: 5px 8px; font-size: 10px; }
+    .part-cell { font-size: 9px; }
+    .desc-cell { font-size: 10px; }
+    .cat-row td { font-size: 9px; padding: 4px 8px; }
+    tbody tr.data-row { page-break-inside: avoid; }
+    .badge { width: 18px; height: 18px; }
+  }
 </style>
 </head>
 <body>
@@ -117,6 +151,14 @@
       <input type="text" id="search" placeholder="Search part number or description…" autocomplete="off">
     </div>
     <div class="count" id="count"></div>
+    <button class="dl-btn" onclick="window.print()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Download PDF Copy
+    </button>
   </div>
 
   <div class="table-card">
@@ -156,6 +198,8 @@
       Not included
     </div>
   </div>
+
+
 
 </div>
 <script>
